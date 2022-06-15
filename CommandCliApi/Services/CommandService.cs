@@ -9,7 +9,6 @@ namespace CommandCliApi.Services
     {
         private readonly ApplicationDbContext _context;
 
-        // TODO make calls async
         // TODO wrap in try/catch
         public CommandService(ApplicationDbContext context)
         {
