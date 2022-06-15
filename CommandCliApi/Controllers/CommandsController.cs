@@ -24,9 +24,9 @@ namespace CommandCliApi.Controllers
 
         // GET api/commands/
         [HttpGet]
-        public ActionResult<IEnumerable<CommandReadDto>> GetAllCommands()
+        public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetAllCommands()
         {
-            var commandItems = _commandService.GetAllCommands();
+            var commandItems = await _commandService.GetAllCommandsAsync();
 
             return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commandItems));
         }
@@ -34,20 +34,20 @@ namespace CommandCliApi.Controllers
 
         // GET api/commands/{id}
         [HttpGet("{id}", Name = "GetCommandById")]
-        public ActionResult<CommandReadDto> GetCommandById(int id)
+        public async Task<ActionResult<CommandReadDto>> GetCommandById(int id)
         {
-            var commandItem = _commandService.GetCommandById(id);
+            var commandItem = await _commandService.GetCommandByIdAsync(id);
 
             return commandItem is not null ? Ok(_mapper.Map<CommandReadDto>(commandItem)) : NotFound();
         }
 
         // POST api/commands
         [HttpPost]
-        public ActionResult<CommandReadDto> CreateCommand(CommandCreateDto commandCreateDto)
+        public async Task<ActionResult<CommandReadDto>> CreateCommand(CommandCreateDto commandCreateDto)
         {
             var commandModel = _mapper.Map<Command>(commandCreateDto);
-            _commandService.CreateCommand(commandModel);
-            _commandService.SaveChanges();
+            await _commandService.CreateCommandAsync(commandModel);
+            await _commandService.SaveChangesAsync();
 
             // we need to return commandReadDto with 201 Created status and URI (as per REST api best practices)
             var commandReadDto = _mapper.Map<CommandReadDto>(commandModel);
@@ -56,9 +56,9 @@ namespace CommandCliApi.Controllers
 
         // PUT api/commands/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateCommand(int id, CommandUpdateDto commandUpdateDto)
+        public async Task<ActionResult> UpdateCommand(int id, CommandUpdateDto commandUpdateDto)
         {
-            var commandModelFromDb = _commandService.GetCommandById(id);
+            var commandModelFromDb = await _commandService.GetCommandByIdAsync(id);
             if (commandModelFromDb is null)
             {
                 return NotFound();
@@ -70,16 +70,16 @@ namespace CommandCliApi.Controllers
             // but it is good practice to still call Update method, in case the implementation changes in the future
             _commandService.UpdateCommand(commandModelFromDb);
 
-            _commandService.SaveChanges();
+            await _commandService.SaveChangesAsync();
 
             return NoContent();
         }
 
         // PATCH api/commands/{id}
         [HttpPatch("{id}")]
-        public ActionResult PartialCommandUpdate(int id, JsonPatchDocument<CommandUpdateDto> patchDoc)
+        public async Task<ActionResult> PartialCommandUpdate(int id, JsonPatchDocument<CommandUpdateDto> patchDoc)
         {
-            var commandModelFromDb = _commandService.GetCommandById(id);
+            var commandModelFromDb = await _commandService.GetCommandByIdAsync(id);
             if (commandModelFromDb is null)
             {
                 return NotFound();
@@ -99,23 +99,23 @@ namespace CommandCliApi.Controllers
             // but it is good practice to still call Update method, in case the implementation changes in the future
             _commandService.UpdateCommand(commandModelFromDb);
 
-            _commandService.SaveChanges();
+            await _commandService.SaveChangesAsync();
 
             return NoContent();
         }
 
         // DELETE api/commands/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteCommand(int id)
+        public async Task<ActionResult> DeleteCommand(int id)
         {
-            var commandModelFromDb = _commandService.GetCommandById(id);
+            var commandModelFromDb = await _commandService.GetCommandByIdAsync(id);
             if (commandModelFromDb is null)
             {
                 return NotFound();
             }
 
             _commandService.DeleteCommand(commandModelFromDb);
-            _commandService.SaveChanges();
+            await _commandService.SaveChangesAsync();
 
             return NoContent();
         }

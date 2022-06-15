@@ -4,11 +4,11 @@ namespace CommandCliApi.Services.Interfaces
 {
     public interface ICommandService
     {
-        void SaveChanges();
+        Task SaveChangesAsync();
 
-        IEnumerable<Command> GetAllCommands();
-        Command GetCommandById(int id);
-        void CreateCommand(Command command);
+        Task<IEnumerable<Command>> GetAllCommandsAsync();
+        Task<Command> GetCommandByIdAsync(int id);
+        Task CreateCommandAsync(Command command);
         void UpdateCommand(Command command);
         void DeleteCommand(Command command);
     }

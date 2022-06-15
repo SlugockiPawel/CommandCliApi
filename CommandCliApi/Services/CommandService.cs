@@ -16,24 +16,24 @@ namespace CommandCliApi.Services
             _context = context;
         }
 
-        public IEnumerable<Command> GetAllCommands()
+        public async Task<IEnumerable<Command>> GetAllCommandsAsync()
         {
-            return  _context.Commands.ToList();
+            return await _context.Commands.ToListAsync();
         }
 
-        public  Command GetCommandById(int id)
+        public async  Task<Command> GetCommandByIdAsync(int id)
         {
-            return  _context.Commands.FirstOrDefault(c => c.Id.Equals(id));
+            return await  _context.Commands.FirstOrDefaultAsync(c => c.Id.Equals(id));
         }
 
-        public void CreateCommand(Command command)
+        public async Task CreateCommandAsync(Command command)
         {
             if (command is null)
             {
                 throw new ArgumentNullException(nameof(command));
             }
 
-            _context.Commands.Add(command);
+            await _context.Commands.AddAsync(command);
         }
 
         public void UpdateCommand(Command command)
@@ -51,9 +51,9 @@ namespace CommandCliApi.Services
             _context.Commands.Remove(command);
         }
 
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
-           _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
     }
 }
